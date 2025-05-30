@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Борис Копытов — XAC3</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.gifer.com/7VE.gif') repeat;
+      opacity: 0.08;
+      z-index: 0;
+    }
+
+    header {
+      background: #b30000;
+      text-align: center;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 5px 15px #b3000055;
+      animation: fadeInDown 1s ease;
+    }
+
+    header h1 {
+      font-size: 3em;
+      margin: 0;
+    }
+
+    header p {
+      font-size: 1.2em;
+      margin-top: 10px;
+      color: #ffcccc;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 1.2s ease;
+    }
+
+    h2 {
+      color: #ff3c3c;
+      border-bottom: 1px solid #ff3c3c;
+      padding-bottom: 5px;
+      margin-top: 40px;
+    }
+
+    .label {
+      color: #ff5e5e;
+      font-weight: bold;
+    }
+
+    a {
+      color: #ff9999;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    a:hover {
+      color: white;
+      text-shadow: 0 0 10px red;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    ul li {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      transition: 0.3s ease;
+    }
+
+    ul li:hover {
+      color: #ff3c3c;
+      transform: translateX(10px);
+    }
+
+    ul li i {
+      margin-right: 12px;
+      color: #ff3c3c;
+    }
+
+    .tutorial-image img {
+      width: 100%;
+      max-width: 600px;
+      border: 3px solid #ff3c3c;
+      border-radius: 10px;
+      box-shadow: 0 0 25px #ff3c3c44;
+    }
+
+    footer {
+      text-align: center;
+      color: #888;
+      margin: 40px 0 20px;
+      z-index: 1;
+      position: relative;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <script>
+    // 🔒 Анти-правый клик, копирование, Ctrl+U, Ctrl+S, Ctrl+C
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey && ['u', 's', 'c'].includes(e.key.toLowerCase())) || e.keyCode === 123) {
+        e.preventDefault();
+      }
+    });
+  </script>
+</head>
+<body ondragstart="return false;" onselectstart="return false;">
+
+<!-- 🔊 Звук -->
+<audio autoplay loop>
+  <source src="https://files.catbox.moe/27yn62.mp3" type="audio/mpeg">
+</audio>
+
+<header>
+  <h1><i class="fa-solid fa-user-astronaut"></i> Борис Копытов</h1>
+  <p><i class="fa-solid fa-crown"></i> Владелец XAC3 • <i class="fa-solid fa-palette"></i> Дизайнер</p>
+</header>
+
+<div class="container">
+  <section>
+    <h2><i class="fa-solid fa-circle-info"></i> Информация</h2>
+    <p><span class="label"><i class="fa-solid fa-code-branch"></i> Каста:</span> Дизайнер</p>
+    <p><span class="label"><i class="fa-brands fa-telegram"></i> Телеграм:</span> <a href="https://t.me/BorisK202">@BorisK202</a></p>
+    <p><span class="label"><i class="fa-solid fa-bolt"></i> Первая активность:</span> Октябрь 2025</p>
+    <p><span class="label"><i class="fa-solid fa-calendar-day"></i> Появился:</span> 21 Сентября 2024</p>
+    <p><span class="label"><i class="fa-solid fa-shield-halved"></i> Антиснос:</span> Установлен</p>
+    <p><span class="label"><i class="fa-solid fa-cake-candles"></i> Возраст:</span> 16 лет</p>
+  </section>
+
+
+<footer>
+  <p>© 2025 XAC3 | Boris Koпытов</p>
+</footer>
+
+</body>
+</html>
