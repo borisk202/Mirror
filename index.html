@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Вы попали не туда — Зеркало Borisk202</title>
+  
+  <!-- Orbitron font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+  <!-- AOS animation -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(-45deg, #1a0000, #300000, #4a0000, #660000);
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 40px 30px;
+      max-width: 600px;
+      border-radius: 20px;
+      border: 2px solid #ff2d2d;
+      box-shadow: 0 0 50px #ff000099;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .container:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 80px #ff0000cc;
+    }
+    h1 {
+      font-size: 2.8em;
+      color: #ff4c4c;
+      margin-bottom: 15px;
+      text-shadow: 0 0 25px #ff1a1a;
+      transition: text-shadow 0.3s ease;
+    }
+    h1:hover {
+      text-shadow: 0 0 40px #ff0000;
+    }
+    h2 {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: #ff6666;
+      text-shadow: 0 0 15px #ff3a3a;
+      transition: text-shadow 0.3s ease;
+    }
+    h2:hover {
+      text-shadow: 0 0 30px #ff2222;
+    }
+    p {
+      font-size: 1.15em;
+      line-height: 1.6;
+      color: #eee;
+      margin-bottom: 20px;
+    }
+    footer {
+      margin-top: 30px;
+      color: #999;
+      font-size: 0.9em;
+    }
+    /* Защита от копирования */
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    /* Отключаем правый клик */
+    body {
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" data-aos="fade-up">
+    <h1>Вы попали не туда</h1>
+    <h2>О сайте</h2>
+    <p>Этот сайт является официальным зеркалом сайта <strong>Borisk202</strong>.</p>
+
+    <h2>Почему прошлый сайт сдох?</h2>
+    <p>Потерян контроль над сайтом, поэтому мы создали это зеркало, чтобы вы всегда могли нас найти.</p>
+
+    <footer>
+      &copy; Borisk202
+    </footer>
+  </div>
+
+  <!-- AOS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('copy', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.ctrlKey && ['c','u','s','x','a'].includes(e.key.toLowerCase())) e.preventDefault();
+    });
+  </script>
+</body>
+</html>
