@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Поиск</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(120deg, #0e0e0e, #1a1a1a, #2a2a2a);
+      background-size: 400% 400%;
+      animation: bgMove 20s infinite alternate;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    @keyframes bgMove {
+      0% {background-position: 0% 50%;}
+      100% {background-position: 100% 50%;}
+    }
+    .glass-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      padding: 30px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 0 30px rgba(255, 0, 80, 0.2);
+      text-align: center;
+      animation: fadeIn 1.2s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    input {
+      background: #222;
+      color: white;
+      border: none;
+      padding: 15px;
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      font-size: 1em;
+      outline: none;
+      box-shadow: 0 0 10px rgba(255,255,255,0.05);
+    }
+    button {
+      width: 100%;
+      background: crimson;
+      border: none;
+      color: white;
+      font-size: 1em;
+      padding: 15px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: darkred;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      min-height: 50px;
+    }
+    .search-links {
+      margin-top: 10px;
+    }
+    .search-links a {
+      color: #ccc;
+      text-decoration: none;
+      margin: 0 5px;
+      background: rgba(255,255,255,0.1);
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: inline-block;
+      font-size: 0.9em;
+    }
+    .search-links a:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 0.8em;
+      color: #666;
+    }
+  </style>
+</head>
+<body oncontextmenu="return false" oncopy="return false" oncut="return false" onpaste="return false">
+  <div class="glass-box">
+    <input type="number" id="tgid" placeholder="Введите Telegram ID">
+    <button onclick="checkID()"><i class="fa-solid fa-magnifying-glass"></i> Найти</button>
+    <div class="result" id="result"></div>
+    <div class="search-links" id="searchLinks" style="display:none;"></div>
+  </div>
+
+  <footer>© 2025 Xac3. Все права защищены. Удалить номер из базы данных - @borisk202 </footer>
+
+  <script>
+    const urls = [
+      'https://raw.githubusercontent.com/rivkos/BorsBio/main/data.txt',
+      'https://raw.githubusercontent.com/rivkos/BorsBio/refs/heads/main/Telegram.txt',
+      'https://raw.githubusercontent.com/rivkos/BorsBio/refs/heads/main/Telegram1.txt'
+    ];
+
+    async function checkID() {
+      const id = document.getElementById('tgid').value.trim();
+      const result = document.getElementById('result');
+      const searchLinks = document.getElementById('searchLinks');
+      result.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Поиск...';
+      searchLinks.style.display = 'none';
+
+      let found = false;
+      for (const url of urls) {
+        try {
+          const res = await fetch(url);
+          const text = await res.text();
+          const lines = text.split('\n');
+
+          for (const line of lines) {
+            const [storedId, phone] = line.trim().split(':');
+            if (storedId === id) {
+              const masked = phone.replace(/(\+\d{4})\d{3}(\d{4})/, '$1***$2');
+              result.innerHTML = `<span style="color:lime;"><i class="fa-solid fa-check-circle"></i> Найден: ${masked}</span>`;
+              searchLinks.innerHTML = `
+                <a href="https://www.google.com/search?q=${phone}" target="_blank">Google</a>
+                <a href="https://yandex.ru/search/?text=${phone}" target="_blank">Yandex</a>
+              `;
+              searchLinks.style.display = 'block';
+              found = true;
+              break;
+            }
+          }
+
+          if (found) break;
+
+        } catch (e) {
+          result.innerHTML = `<span style="color:orange;"><i class="fa-solid fa-triangle-exclamation"></i> Ошибка загрузки базы</span>`;
+        }
+      }
+
+      if (!found) {
+        result.innerHTML = `<span style="color:red;"><i class="fa-solid fa-xmark-circle"></i> ID не найден</span>`;
+      }
+    }
+
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey && e.key === 'c') || (e.ctrlKey && e.key === 'u')) {
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
