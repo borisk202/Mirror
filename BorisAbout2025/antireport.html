@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Борис Копытов — Уход из Telegram</title>
+
+  <!-- Orbitron -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <!-- AOS для анимации -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    html, body {
+      font-family: 'Orbitron', sans-serif;
+      overflow-x: hidden;
+      background: linear-gradient(-45deg, #1a0000, #300000, #4a0000, #660000);
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
+      color: #fff;
+      scroll-behavior: smooth;
+    }
+
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    header {
+      padding: 60px 20px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.85);
+      border-bottom: 2px solid #ff3c3c;
+      box-shadow: 0 0 40px #ff3c3c88;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    header:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0 60px #ff0000cc;
+    }
+
+    h1 {
+      font-size: 2.8em;
+      color: #ffffff;
+      text-shadow: 0 0 20px #ff1a1a;
+      transition: text-shadow 0.3s ease;
+    }
+
+    h1:hover {
+      text-shadow: 0 0 30px #ff0000;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid #ff2d2d;
+      border-radius: 20px;
+      box-shadow: 0 0 40px #ff000066;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .container:hover {
+      transform: scale(1.015);
+      box-shadow: 0 0 60px #ff000099;
+    }
+
+    h2, h3 {
+      color: #ff5555;
+      text-shadow: 0 0 10px #ff2a2a;
+      margin-top: 20px;
+      transition: text-shadow 0.3s ease;
+    }
+
+    h2:hover, h3:hover {
+      text-shadow: 0 0 20px #ff4444;
+    }
+
+    p, li {
+      font-size: 1.15em;
+      line-height: 1.8;
+      color: #eeeeee;
+    }
+
+    ul {
+      padding-left: 20px;
+      list-style-type: square;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 1em;
+      margin-top: 40px;
+      color: #aaa;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2em; }
+      .container { margin: 20px 10px; padding: 20px; }
+      h2, h3 { font-size: 1.3em; }
+      p, li { font-size: 1em; }
+    }
+  </style>
+
+  <!-- Защита от копирования и ПКМ -->
+  <script>
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('copy', event => event.preventDefault());
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && ['c', 'u', 's', 'x', 'a'].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+      }
+    });
+    document.addEventListener('selectstart', event => event.preventDefault());
+  </script>
+</head>
+<body>
+
+<header data-aos="fade-down">
+  <h1>Борис Копытов Александрович</h1>
+</header>
+
+<div class="container" data-aos="fade-up">
+  <h2>Приветствую вас, дорогие посетители этой страницы!</h2>
+  <p>Меня зовут Борис Копытов Александрович, и в этом сообщении я хочу поделиться с вами важной новостью: я полностью прекращаю свои проекты в Telegram.</p>
+
+  <h3>Причины моего решения:</h3>
+  <ul>
+    <li><strong>Законы Российской Федерации:</strong> Я не хочу рисковать своей свободой и свободой других людей, нарушая законы.</li>
+    <li><strong>Угрозы:</strong> Мне уже поступало более 15 угроз. Я понимаю, что они не воплотят их в жизнь.</li>
+    <li><strong>Время:</strong> Хочу посвятить своё свободное время себе, а Telegram занимал его полностью.</li>
+  </ul>
+
+  <ul>
+    <li>Я больше не продаю товары — у меня достаточно средств.</li>
+    <li>Не продаю свои никнеймы и вещи, которые останутся после меня.</li>
+  </ul>
+
+  <h3>Что я имел?</h3>
+  <ul>
+    <li>Клан</li>
+    <li>Личность</li>
+    <li>Другие аккаунты</li>
+  </ul>
+
+  <div class="footer">
+    2023 – 2025<br>@Borisk202
+  </div>
+</div>
+
+<!-- AOS анимации -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+
+</body>
+</html>
