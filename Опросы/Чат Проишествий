@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Чат Происшествий</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+  body {
+    margin: 0; padding: 0; background: #0a0f2f; color: #cde;
+    font-family: 'Orbitron', monospace;
+    display: flex; flex-direction: column; height: 100vh;
+  }
+  header {
+    background: linear-gradient(90deg, #091540, #00113f);
+    padding: 20px;
+    font-size: 1.5em;
+    text-align: center;
+    color: #66f;
+    text-shadow: 0 0 8px #3399ff;
+    user-select: none;
+  }
+  #chat-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .msg {
+    max-width: 80%;
+    padding: 12px 18px;
+    border-radius: 20px;
+    line-height: 1.4;
+    font-size: 1rem;
+    animation: fadeIn 0.5s ease forwards;
+  }
+  .user-msg {
+    background: #223366;
+    color: #aaddff;
+    align-self: flex-end;
+    box-shadow: 0 0 10px #3399ff77;
+  }
+  .bot-msg {
+    background: #112244;
+    color: #88bbff;
+    align-self: flex-start;
+    box-shadow: 0 0 12px #5577ff88;
+  }
+  #input-area {
+    display: flex;
+    background: #091540;
+    padding: 10px 15px;
+    border-top: 2px solid #223366;
+  }
+  #user-input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 30px;
+    outline: none;
+    background: #112244;
+    color: #bbddff;
+    box-shadow: inset 0 0 10px #5577ff88;
+    transition: box-shadow 0.3s ease;
+  }
+  #user-input:focus {
+    box-shadow: inset 0 0 15px #77aaff;
+  }
+  #send-btn {
+    margin-left: 12px;
+    background: #3366ff;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 0 15px #5577ffaa;
+  }
+  #send-btn:disabled {
+    background: #223366;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  #send-btn:hover:not(:disabled) {
+    background: #5588ff;
+  }
+  @keyframes fadeIn {
+    from {opacity: 0; transform: translateY(12px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+</style>
+</head>
+<body>
+<header>ChatGPT: Происшествия — Реальный чат</header>
+<div id="chat-container"></div>
+<div id="input-area">
+  <input id="user-input" autocomplete="off" placeholder="Напиши сообщение..." />
+  <button id="send-btn" disabled>Отправить</button>
+</div>
+
+<script>
+  // ВАЖНО! ВСТАВЬТЕ СВОЙ OPENAI API КЛЮЧ ЗДЕСЬ (НЕ ПОКАЗЫВАЙТЕ ЕГО НИКОМУ)
+  const OPENAI_API_KEY = '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';
+
+  const chatContainer = document.getElementById('chat-container');
+  const userInput = document.getElementById('user-input');
+  const sendBtn = document.getElementById('send-btn');
+
+  userInput.addEventListener('input', () => {
+    sendBtn.disabled = userInput.value.trim().length === 0;
+  });
+
+  function addMessage(text, isUser) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + (isUser ? 'user-msg' : 'bot-msg');
+    div.textContent = text;
+    chatContainer.appendChild(div);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  async function sendMessage(message) {
+    addMessage(message, true);
+    userInput.value = '';
+    sendBtn.disabled = true;
+
+    addMessage("...", false); // индикатор загрузки
+
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + OPENAI_API_KEY,
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: "Ты играешь роль очевидца и автора рассказа о происшествиях. Отвечай живо и эмоционально." },
+            { role: "user", content: message }
+          ],
+          max_tokens: 200,
+          temperature: 0.8
+        }),
+      });
+
+      const data = await response.json();
+      // Удаляем индикатор "..."
+      chatContainer.removeChild(chatContainer.lastChild);
+
+      if (data.error) {
+        addMessage("Ошибка API: " + data.error.message, false);
+      } else {
+        const answer = data.choices[0].message.content.trim();
+        addMessage(answer, false);
+      }
+    } catch (err) {
+      chatContainer.removeChild(chatContainer.lastChild);
+      addMessage("Ошибка подключения к серверу или сети.", false);
+    }
+
+    sendBtn.disabled = false;
+  }
+
+  sendBtn.addEventListener('click', () => {
+    const msg = userInput.value.trim();
+    if (msg) sendMessage(msg);
+  });
+
+  userInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !sendBtn.disabled) {
+      sendBtn.click();
+      e.preventDefault();
+    }
+  });
+</script>
+</body>
+</html>
