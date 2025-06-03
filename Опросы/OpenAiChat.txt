@@ -285,7 +285,7 @@
   // WebSocket клиент
   let ws = null;
   // Для демо используем echo сервер (заменить на свой)
-  const WS_SERVER = "wss://ws.postman-echo.com/raw";
+  const WS_SERVER = "wss://s14748.blr1.piesocket.com/v3/1?api_key=BzO19MHYivowkIQjrVBRMl6kVY7pg93yIxmX6JKu&notify_self=1";
 
   // DOM
   const userListDiv = document.getElementById("userList");
