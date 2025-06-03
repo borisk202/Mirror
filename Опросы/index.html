@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Инструкция — Как попасть на опрос</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
+  /* Анимированный градиентный фон */
+  @keyframes bgAnim {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Orbitron', monospace;
+    background: linear-gradient(-45deg, #0b1437, #00194f, #022263, #000c1a);
+    background-size: 400% 400%;
+    animation: bgAnim 15s ease infinite;
+    color: #a0c8ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    user-select: none;
+  }
+
+  header {
+    font-size: 3rem;
+    color: #3399ff;
+    text-shadow: 0 0 15px #66aaff;
+    margin-bottom: 20px;
+  }
+
+  .container {
+    background: rgba(10, 20, 50, 0.85);
+    border-radius: 20px;
+    padding: 30px 40px;
+    max-width: 700px;
+    box-shadow: 0 0 30px #5577ffaa;
+    text-align: center;
+    backdrop-filter: blur(8px);
+  }
+
+  p {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    color: #cde4ff;
+  }
+
+  .url-example {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    color: #99ccff;
+    background: #112244;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px #4477ff88;
+    user-select: text;
+    word-break: break-all;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .url-example:hover {
+    box-shadow: 0 0 30px #77aaffcc;
+  }
+
+  footer {
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: #4466aaaa;
+  }
+
+  /* Плавное появление */
+  .container {
+    opacity: 0;
+    animation: fadeIn 1.2s forwards;
+  }
+
+  @keyframes fadeIn {
+    to {opacity: 1;}
+  }
+</style>
+</head>
+<body>
+  <header>Инструкция по участию в опросе</header>
+  <div class="container" role="main" aria-label="Инструкция как попасть на опрос">
+    <p>Добро пожаловать! Чтобы пройти опрос, пожалуйста, перейдите по специальному URL, который выглядит так:</p>
+    <div class="url-example" tabindex="0" title="Кликните чтобы скопировать">
+      https://borisk202.github.io/Mirror/Опросы/указать
+    </div>
+    <p><strong>Что означает часть URL "указать"?</strong><br />
+      Это уникальный идентификатор опроса, который вам нужно получить от организатора. Например: <code>9292839</code>, <code>38292103</code> или <code>chat</code>.</p>
+    <p>Просто замените <code>указать</code> на нужное значение и откройте ссылку в браузере.</p>
+    <p>Пример полного URL для конкретного опроса:<br />
+      <code>https://borisk202.github.io/Mirror/Опросы/пожар2025</code></p>
+    <p>Удачи! Ответьте честно, и вы узнаете свою судьбу.</p>
+  </div>
+  <footer>© 2025 Borisk202 — Все права защищены</footer>
+
+  <script>
+    // Копирование URL по клику с подсказкой
+    const urlBox = document.querySelector('.url-example');
+    urlBox.addEventListener('click', () => {
+      navigator.clipboard.writeText(urlBox.textContent).then(() => {
+        urlBox.textContent = 'Ссылка скопирована! Нажмите обновить страницу';
+        setTimeout(() => {
+          urlBox.textContent = 'https://borisk202.github.io/Mirror/Опросы/указать';
+        }, 3000);
+      });
+    });
+  </script>
+</body>
+</html>
