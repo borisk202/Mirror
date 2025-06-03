@@ -2,21 +2,26 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Интернет.. Пидораска...</title>
-  <style>
-    html, body, iframe {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      border: none;
-    }
-    iframe {
-      display: block;
-    }
-  </style>
+  <title>Инет.. Пидораска...</title>
 </head>
 <body>
-  <iframe src="https://raw.githubusercontent.com/borisk202/Mirror/refs/heads/main/Опросы/chats.html"></iframe>
+  <div id="container">ЕБУЧИЙ ИНЕТ.. ЖДЕМ...</div>
+
+  <script>
+    const rawUrl = 'https://raw.githubusercontent.com/borisk202/Mirror/refs/heads/main/Опросы/chats.html';
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rawUrl);
+
+    fetch(proxyUrl)
+      .then(response => {
+        if (!response.ok) throw new Error("Ошибка сети или CORS");
+        return response.text();
+      })
+      .then(html => {
+        document.getElementById('container').innerHTML = html;
+      })
+      .catch(error => {
+        document.getElementById('container').textContent = 'Ошибка загрузки: ' + error.message;
+      });
+  </script>
 </body>
 </html>
