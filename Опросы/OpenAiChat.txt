@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Red-Black Chat (WSS)</title>
+<title>Рабочий WebSocket Чат</title>
 <style>
   body {
     margin:0; padding:0; background:#121212; color:#eee; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -80,6 +80,8 @@
     background: #222;
     border-radius: 8px;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
   }
   .message {
     margin-bottom: 10px;
@@ -87,6 +89,7 @@
     border-radius: 15px;
     max-width: 80%;
     word-wrap: break-word;
+    user-select:none;
   }
   .message.self {
     background: #b22222;
@@ -142,8 +145,8 @@
 
 <div id="loginScreen">
   <h2>Вход в чат</h2>
-  <input type="text" id="nickname" placeholder="Введите ник" maxlength="20" autofocus />
-  <input type="password" id="password" placeholder="Введите пароль" maxlength="20" />
+  <input type="text" id="nickname" placeholder="Введите ник" maxlength="20" autofocus autocomplete="off" />
+  <input type="password" id="password" placeholder="Введите пароль" maxlength="20" autocomplete="off" />
   <button id="loginBtn">Войти</button>
   <div id="loginError" style="color:#f55; margin-top:8px; display:none;"></div>
 </div>
@@ -153,7 +156,7 @@
     <h3>Red-Black Chat</h3>
     <button id="logoutBtn" title="Выйти">Выйти</button>
   </div>
-  <div id="messages"></div>
+  <div id="messages" aria-live="polite" aria-atomic="false" role="log"></div>
   <div id="inputArea">
     <input type="text" id="messageInput" placeholder="Введите сообщение..." maxlength="500" autocomplete="off" />
     <button id="sendBtn">Отправить</button>
@@ -163,10 +166,8 @@
 
 <script>
 (() => {
-  // Параметры сервера
   const WS_URL = "wss://s14748.blr1.piesocket.com/v3/1?api_key=BzO19MHYivowkIQjrVBRMl6kVY7pg93yIxmX6JKu&notify_self=1";
 
-  // Состояния
   let ws = null;
   let nickname = null;
   let password = null;
@@ -185,16 +186,14 @@
   const logoutBtn = document.getElementById("logoutBtn");
   const statusDiv = document.getElementById("status");
 
-  // Вспомогательная функция для создания элемента сообщения
   function addMessage(author, text, self = false) {
     const div = document.createElement("div");
     div.className = "message " + (self ? "self" : "other");
-    div.innerHTML = `<div class="author">${author}</div><div class="text">${escapeHtml(text)}</div>`;
+    div.innerHTML = `<div class="author">${escapeHtml(author)}</div><div class="text">${escapeHtml(text)}</div>`;
     messagesDiv.appendChild(div);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }
 
-  // Экранирование HTML для безопасности
   function escapeHtml(text) {
     return text.replace(/[&<>"']/g, (m) => {
       switch(m) {
@@ -208,13 +207,11 @@
     });
   }
 
-  // Включить / выключить статус подключения
   function setStatus(text, isError = false) {
     statusDiv.textContent = text;
     statusDiv.style.color = isError ? "#f55" : "#bbb";
   }
 
-  // Подключение WebSocket
   function connectWs() {
     setStatus("Подключение...");
     ws = new WebSocket(WS_URL);
@@ -222,7 +219,7 @@
     ws.onopen = () => {
       isConnected = true;
       setStatus(`Подключено как ${nickname}`);
-      // Авторизация - для примера просто отправим ник+пароль в формате JSON
+      // Отправим сообщение с авторизацией (просто для примера)
       ws.send(JSON.stringify({
         type: "auth",
         nick: nickname,
@@ -231,37 +228,27 @@
     };
 
     ws.onmessage = (evt) => {
-      // Обработка сообщений от сервера
-      let data = null;
+      let data;
       try {
         data = JSON.parse(evt.data);
       } catch {
-        // Если не JSON - просто показать как текст
         addMessage("Сервер", evt.data, false);
         return;
       }
 
-      switch(data.type) {
-        case "auth_success":
-          setStatus("Авторизация успешна");
-          break;
-        case "auth_fail":
-          setStatus("Ошибка авторизации", true);
-          ws.close();
-          break;
-        case "message":
-          if(data.nick && data.text) {
-            const isSelf = (data.nick === nickname);
-            addMessage(data.nick, data.text, isSelf);
-            if (!isSelf) playNotificationSound();
-          }
-          break;
-        case "system":
-          addMessage("Система", data.text || "[Системное сообщение]", false);
-          break;
-        default:
-          // Непонятный тип
-          addMessage("Сервер", evt.data, false);
+      if(data.type === "message" && data.nick && data.text) {
+        const isSelf = (data.nick === nickname);
+        addMessage(data.nick, data.text, isSelf);
+        if (!isSelf) playNotificationSound();
+      } else if (data.type === "auth_success") {
+        setStatus("Авторизация успешна");
+      } else if (data.type === "auth_fail") {
+        setStatus("Ошибка авторизации", true);
+        ws.close();
+      } else if (data.type === "system") {
+        addMessage("Система", data.text || "[Системное сообщение]", false);
+      } else {
+        addMessage("Сервер", evt.data, false);
       }
     };
 
@@ -275,7 +262,6 @@
     };
   }
 
-  // Отправка сообщения
   function sendMessage() {
     if (!isConnected) return;
     const text = messageInput.value.trim();
@@ -285,7 +271,6 @@
       return;
     }
 
-    // Формат отправки
     const msg = {
       type: "message",
       nick: nickname,
@@ -298,13 +283,11 @@
     messageInput.focus();
   }
 
-  // Звук уведомления о новом сообщении
   function playNotificationSound() {
     const audio = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQA=");
     audio.play().catch(() => {});
   }
 
-  // Вход
   loginBtn.addEventListener("click", () => {
     loginError.style.display = "none";
     const nick = nicknameInput.value.trim();
@@ -332,29 +315,25 @@
     messageInput.focus();
   });
 
-  // Отправка сообщения по кнопке и Enter
   sendBtn.addEventListener("click", sendMessage);
   messageInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if(e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   });
 
-  // Выход
   logoutBtn.addEventListener("click", () => {
-    if (ws) ws.close();
+    if(ws) ws.close();
     nickname = null;
     password = null;
     messagesDiv.innerHTML = "";
-    chatScreen.style.display = "none";
+    messageInput.value = "";
     loginScreen.style.display = "flex";
-    nicknameInput.value = "";
-    passwordInput.value = "";
-    nicknameInput.focus();
+    chatScreen.style.display = "none";
     setStatus("");
+    nicknameInput.focus();
   });
-
 })();
 </script>
 
