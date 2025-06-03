@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Redgram — Telegram-подобный мессенджер</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  /* Стили в твоей палитре красно-бело-черной */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin:0; padding:0; height:100%;
+    background: #000;
+    color: #eee;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: #b10000;
+    padding: 15px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    user-select: none;
+  }
+  #app {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    height: calc(100vh - 60px);
+  }
+  /* Sidebar с пользователями и чатами */
+  #sidebar {
+    width: 280px;
+    background: #111;
+    border-right: 3px solid #b10000;
+    display: flex;
+    flex-direction: column;
+  }
+  #sidebar header {
+    font-weight: bold;
+    padding: 10px;
+    border-bottom: 2px solid #b10000;
+    color: #f5f5f5;
+    text-align: center;
+  }
+  #userList, #chatList {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+  #userList .user, #chatList .chat {
+    background: #222;
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  #userList .user:hover, #chatList .chat:hover {
+    background: #b10000;
+    color: white;
+  }
+  #userList .user.admin {
+    color: #ffd700;
+    font-weight: bold;
+  }
+  #userList .user.banned {
+    text-decoration: line-through;
+    opacity: 0.5;
+  }
+  #userList .user .actions {
+    margin-top: 4px;
+  }
+  #userList .user .actions button {
+    background: #b10000;
+    border: none;
+    padding: 4px 7px;
+    margin-right: 5px;
+    border-radius: 5px;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  #userList .user .actions button:hover {
+    background: #ff3b3b;
+  }
+
+  /* Основная область с чатами */
+  #chatWindow {
+    flex: 1;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+  }
+  #chatHeader {
+    background: #b10000;
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+    user-select: none;
+  }
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    scroll-behavior: smooth;
+  }
+  .message {
+    margin-bottom: 12px;
+    max-width: 75%;
+    padding: 8px 12px;
+    border-radius: 15px;
+    animation: fadeInUp 0.3s ease forwards;
+    user-select: text;
+  }
+  .message.self {
+    background: #b10000;
+    align-self: flex-end;
+    color: #fff;
+  }
+  .message.other {
+    background: #222;
+    align-self: flex-start;
+    color: #eee;
+  }
+  .message .sender {
+    font-weight: bold;
+    margin-bottom: 4px;
+    font-size: 0.85em;
+  }
+  .message .text {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .message img {
+    max-width: 100%;
+    margin-top: 6px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  /* Системные уведомления */
+  .system-message {
+    color: #ffa500;
+    font-style: italic;
+    text-align: center;
+    margin: 12px 0;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    } to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Ввод сообщения */
+  #inputArea {
+    display: flex;
+    padding: 10px;
+    background: #222;
+    border-top: 3px solid #b10000;
+  }
+  #messageInput {
+    flex: 1;
+    border: none;
+    background: #111;
+    color: #eee;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    outline: none;
+  }
+  #sendBtn {
+    background: #b10000;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 0 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+  #sendBtn:hover:not(:disabled) {
+    background: #ff3b3b;
+  }
+  #sendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  /* Анимации подарков */
+  #giftsContainer {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .gift {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+    animation: floatUp 3s ease forwards;
+  }
+  @keyframes floatUp {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-150px) scale(1.5);
+    }
+  }
+
+  /* Scrollbar кастом */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #111;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #b10000;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+<header>🟥 Redgram — Telegram-подобный мессенджер</header>
+
+<div id="app">
+  <div id="sidebar">
+    <header>Пользователи</header>
+    <div id="userList"></div>
+    <header>Чаты</header>
+    <div id="chatList"></div>
+    <button id="newChatBtn" style="margin:10px; background:#b10000; border:none; color:#fff; font-weight:bold; padding:8px; border-radius:6px; cursor:pointer;">+ Новый чат</button>
+  </div>
+  <div id="chatWindow">
+    <div id="chatHeader">Выберите чат</div>
+    <div id="messages"></div>
+    <div id="inputArea" style="display:none;">
+      <input type="file" id="fileInput" accept="image/*" style="display:none;" />
+      <input id="messageInput" placeholder="Напишите сообщение..." autocomplete="off" />
+      <button id="attachBtn" title="Прикрепить изображение" style="background:#444; border:none; color:#eee; font-size:20px; margin-right:8px; cursor:pointer;">📎</button>
+      <button id="giftBtn" title="Подарок 🎁" style="background:#444; border:none; color:#eee; font-size:20px; margin-right:8px; cursor:pointer;">🎁</button>
+      <button id="sendBtn" disabled>➡️</button>
+    </div>
+  </div>
+</div>
+
+<div id="giftsContainer"></div>
+
+<script>
+(() => {
+  // --- Данные ---
+
+  // Текущий пользователь
+  let currentUser = null;  // { username, password, banned }
+  // Админ
+  const ADMIN_USERNAME = "@borisk202";
+
+  // Пользователи — загружаются из localStorage
+  let users = JSON.parse(localStorage.getItem("users_redgram") || "[]");
+  // Чаты
+  // {id, title, members: [username], messages: [{sender, text, image, date}] }
+  let chats = JSON.parse(localStorage.getItem("chats_redgram") || "[]");
+
+  // Текущий открытый чат id
+  let currentChatId = null;
+
+  // Бан-лист (username)
+  let bannedUsers = JSON.parse(localStorage.getItem("banned_redgram") || "[]");
+
+  // WebSocket клиент
+  let ws = null;
+  // Для демо используем echo сервер (заменить на свой)
+  const WS_SERVER = "wss://ws.postman-echo.com/raw";
+
+  // DOM
+  const userListDiv = document.getElementById("userList");
+  const chatListDiv = document.getElementById("chatList");
+  const chatHeader = document.getElementById("chatHeader");
+  const messagesDiv = document.getElementById("messages");
+  const inputArea = document.getElementById("inputArea");
+  const messageInput = document.getElementById("messageInput");
+  const sendBtn = document.getElementById("sendBtn");
+  const newChatBtn = document.getElementById("newChatBtn");
+  const attachBtn = document.getElementById("attachBtn");
+  const fileInput = document.getElementById("fileInput");
+  const giftBtn = document.getElementById("giftBtn");
+  const giftsContainer = document.getElementById("giftsContainer");
+
+  // --- Функции сохранения ---
+  function saveUsers() {
+    localStorage.setItem("users_redgram", JSON.stringify(users));
+  }
+  function saveChats() {
+    localStorage.setItem("chats_redgram", JSON.stringify(chats));
+  }
+  function saveBanned() {
+    localStorage.setItem("banned_redgram", JSON.stringify(bannedUsers));
+  }
+
+  // --- Функция добавления системного уведомления в чат ---
+  function addSystemMessage(text) {
+    const div = document.createElement("div");
+    div.className = "system-message";
+    div.textContent = "🔔 " + text;
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  // --- Функция добавления сообщения ---
+  function addMessage(msg, self = false) {
+    const div = document.createElement("div");
+    div.className = "message " + (self ? "self" : "other");
+    if (!self) {
+      const senderDiv = document.createElement("div");
+      senderDiv.className = "sender";
+      senderDiv.textContent = msg.sender;
+      div.appendChild(senderDiv);
+    }
+    if (msg.text) {
+      const textDiv = document.createElement("div");
+      textDiv.className = "text";
+      textDiv.textContent = msg.text;
+      div.appendChild(textDiv);
+    }
+    if (msg.image) {
+      const img = document.createElement("img");
+      img.src = msg.image;
+      img.alt = "Прикрепленное изображение";
+      img.onclick = () => window.open(msg.image, "_blank");
+      div.appendChild(img);
+    }
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  // --- Функция обновления списка пользователей ---
+  function renderUsers() {
+    userListDiv.innerHTML = "";
+    users.forEach(u => {
+      const userDiv = document.createElement("div");
+      userDiv.className = "user";
+      if (u.username === ADMIN_USERNAME) userDiv.classList.add("admin");
+      if (bannedUsers.includes(u.username)) userDiv.classList.add("banned");
+      userDiv.textContent = u.username;
+
+      // Кнопки для админа
+      if (currentUser && currentUser.username === ADMIN_USERNAME && u.username !== ADMIN_USERNAME) {
+        const actionsDiv = document.createElement("div");
+        actionsDiv.className = "actions";
+        // Бан/разбан
+        const banBtn = document.createElement("button");
+        banBtn.textContent = bannedUsers.includes(u.username) ? "Разбан" : "Забанить";
+        banBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (bannedUsers.includes(u.username)) {
+            bannedUsers = bannedUsers.filter(x => x !== u.username);
+            addSystemMessage(`Пользователь ${u.username} разбанен`);
+          } else {
+            bannedUsers.push(u.username);
+            addSystemMessage(`Пользователь ${u.username} забанен`);
+          }
+          saveBanned();
+          renderUsers();
+        };
+        actionsDiv.appendChild(banBtn);
+
+        // Кик (удаление пользователя)
+        const kickBtn = document.createElement("button");
+        kickBtn.textContent = "Кик";
+        kickBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (confirm(`Кикнуть пользователя ${u.username}?`)) {
+            users = users.filter(x => x.username !== u.username);
+            bannedUsers = bannedUsers.filter(x => x !== u.username);
+            chats.forEach(c => {
+              c.members = c.members.filter(m => m !== u.username);
+              c.messages = c.messages.filter(m => m.sender !== u.username);
+            });
+            saveUsers();
+            saveBanned();
+            saveChats();
+            addSystemMessage(`Пользователь ${u.username} удалён (кикнут)`);
+            renderUsers();
+            renderChats();
+            if (currentChatId) loadChat(currentChatId);
+          }
+        };
+        actionsDiv.appendChild(kickBtn);
+
+        userDiv.appendChild(actionsDiv);
+      }
+      userListDiv.appendChild(userDiv);
+    });
+  }
+
+  // --- Функция обновления списка чатов ---
+  function renderChats() {
+    chatListDiv.innerHTML = "";
+    chats.forEach(chat => {
+      const chatDiv = document.createElement("div");
+      chatDiv.className = "chat";
+      chatDiv.textContent = chat.title + ` (${chat.members.length})`;
+      if (chat.id === currentChatId) {
+        chatDiv.style.backgroundColor = "#b10000";
+        chatDiv.style.color = "white";
+      }
+      chatDiv.onclick = () => {
+        currentChatId = chat.id;
+        loadChat(chat.id);
+      };
+      chatListDiv.appendChild(chatDiv);
+    });
+  }
+
+  // --- Функция загрузки чата ---
+  function loadChat(chatId) {
+    const chat = chats.find(c => c.id === chatId);
+    if (!chat) {
+      chatHeader.textContent = "Чат не найден";
+      messagesDiv.innerHTML = "";
+      inputArea.style.display = "none";
+      return;
+    }
+    chatHeader.textContent = chat.title;
+    messagesDiv.innerHTML = "";
+    chat.messages.forEach(msg => {
+      addMessage(msg, msg.sender === currentUser.username);
+    });
+    inputArea.style.display = bannedUsers.includes(currentUser.username) ? "none" : "flex";
+    messageInput.value = "";
+    sendBtn.disabled = true;
+  }
+
+  // --- Функция отправки сообщения ---
+  function sendMessage() {
+    if (!currentChatId) return;
+    const chat = chats.find(c => c.id === currentChatId);
+    if (!chat) return;
+
+    let text = messageInput.value.trim();
+    if (!text && !fileInput.files.length) return;
+
+    const msg = {
+      sender: currentUser.username,
+      text: text || null,
+      image: null,
+      date: new Date().toISOString()
+    };
+
+    if (fileInput.files.length) {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        msg.image = e.target.result;
+        chat.messages.push(msg);
+        saveChats();
+        addMessage(msg, true);
+        fileInput.value = "";
+        messageInput.value = "";
+        sendBtn.disabled = true;
+        // Имитируем отправку через WS (эко)
+        sendViaWebSocket(msg);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      chat.messages.push(msg);
+      saveChats();
+      addMessage(msg, true);
+      messageInput.value = "";
+      sendBtn.disabled = true;
+      // Имитируем отправку через WS (эко)
+      sendViaWebSocket(msg);
+    }
+  }
+
+  // --- Функция обработки входящих сообщений ---
+  function receiveMessage(msg) {
+    // Игнорируем свои сообщения (для echo сервера)
+    if (msg.sender === currentUser.username) return;
+    if (!currentChatId) return;
+    const chat = chats.find(c => c.id === currentChatId);
+    if (!chat) return;
+    // Проверяем, что отправитель в чате
+    if (!chat.members.includes(msg.sender)) return;
+
+    chat.messages.push(msg);
+    saveChats();
+    addMessage(msg, false);
+  }
+
+  // --- WebSocket ---
+  function connectWS() {
+    ws = new WebSocket(WS_SERVER);
+    ws.onopen = () => {
+      addSystemMessage("Подключено к серверу");
+    };
+    ws.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        receiveMessage(msg);
+      } catch (e) {}
+    };
+    ws.onclose = () => {
+      addSystemMessage("Отключено от сервера. Попытка переподключения через 5 секунд...");
+      setTimeout(connectWS, 5000);
+    };
+    ws.onerror = () => {
+      addSystemMessage("Ошибка соединения");
+      ws.close();
+    };
+  }
+
+  function sendViaWebSocket(msg) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(msg));
+    }
+  }
+
+  // --- Создать новый чат ---
+  function createChat() {
+    let title = prompt("Название нового чата (групповой или личный):");
+    if (!title) return;
+    // Для простоты добавим всех пользователей, кроме забаненных
+    const members = users.filter(u => !bannedUsers.includes(u.username)).map(u => u.username);
+    const id = "chat_" + Date.now();
+    const chat = { id, title, members, messages: [] };
+    chats.push(chat);
+    saveChats();
+    renderChats();
+  }
+
+  // --- Регистрация и вход ---
+  function login() {
+    let username = prompt("Введите никнейм (например, @borisk202):");
+    if (!username) return login();
+    if (!username.startsWith("@")) username = "@" + username;
+    let user = users.find(u => u.username === username);
+    if (!user) {
+      // Регистрация
+      let pwd = prompt("Регистрация. Введите пароль для " + username);
+      if (!pwd) return login();
+      user = { username, password: pwd };
+      users.push(user);
+      saveUsers();
+      alert("Пользователь зарегистрирован. Теперь войдите.");
+      return login();
+    }
+    let pwd = prompt("Введите пароль для " + username);
+    if (pwd !== user.password) {
+      alert("Неверный пароль");
+      return login();
+    }
+    if (bannedUsers.includes(username)) {
+      alert("Вы забанены и не можете пользоваться мессенджером.");
+      return;
+    }
+    currentUser = user;
+    addSystemMessage(`Добро пожаловать, ${currentUser.username}!`);
+    // Автоматически выбираем первый чат, если есть
+    if (chats.length) {
+      currentChatId = chats[0].id;
+      loadChat(currentChatId);
+    } else {
+      inputArea.style.display = "none";
+      chatHeader.textContent = "Нет доступных чатов";
+    }
+    renderUsers();
+    renderChats();
+    connectWS();
+  }
+
+  // --- Обработчики ---
+  messageInput.addEventListener("input", () => {
+    sendBtn.disabled = !messageInput.value.trim() && !fileInput.files.length;
+  });
+  sendBtn.addEventListener("click", sendMessage);
+  newChatBtn.addEventListener("click", () => {
+    if (currentUser.username !== ADMIN_USERNAME) {
+      alert("Только админ может создавать новые чаты");
+      return;
+    }
+    createChat();
+  });
+  attachBtn.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", () => {
+    sendBtn.disabled = !messageInput.value.trim() && !fileInput.files.length;
+  });
+
+  giftBtn.addEventListener("click", () => {
+    const gift = document.createElement("div");
+    gift.className = "gift";
+    gift.textContent = "🎁";
+    giftsContainer.appendChild(gift);
+    setTimeout(() => giftsContainer.removeChild(gift), 3000);
+  });
+
+  // --- Запуск ---
+  login();
+})();
+</script>
+
+</body>
+</html>
