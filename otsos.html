@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔥 Хакерский апокалипсис 🔥</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      font-family: monospace;
+      color: white;
+    }
+
+    .layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-position: center;
+      background-size: cover;
+      pointer-events: none;
+    }
+
+    .fire {
+      background: url('https://media.giphy.com/media/3o7abldj0b3rxrZUxW/giphy.gif') no-repeat center/cover;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    .smoke {
+      background: url('https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif') no-repeat center/cover;
+      opacity: 0.2;
+      z-index: 1;
+    }
+
+    .field {
+      background: url('https://i.imgur.com/4XbF9yb.jpg') no-repeat center/cover;
+      opacity: 0.3;
+      z-index: -1;
+    }
+
+    .helicopter, .plane {
+      position: absolute;
+      width: 100px;
+      opacity: 0.7;
+      z-index: 2;
+      animation: fly 20s linear infinite;
+    }
+
+    .helicopter {
+      top: 10%;
+      left: -100px;
+      animation-duration: 30s;
+    }
+
+    .plane {
+      top: 20%;
+      left: -150px;
+    }
+
+    @keyframes fly {
+      from { left: -150px; top: 10%; }
+      to { left: 110%; top: 15%; }
+    }
+
+    .title {
+      position: fixed;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 3em;
+      color: red;
+      text-shadow: 0 0 10px red, 0 0 20px darkred;
+      animation: flicker 1.5s infinite alternate;
+      z-index: 3;
+    }
+
+    @keyframes flicker {
+      from { opacity: 1; }
+      to { opacity: 0.6; }
+    }
+
+    .groups {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      gap: 40px;
+      padding-top: 100px;
+    }
+
+    .group {
+      font-size: 2em;
+      color: #0ff;
+      border: 2px solid #0ff;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 20px #0ff;
+      animation: glitch 1s infinite;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0, 0) skew(0deg); }
+      20% { transform: translate(-2px, 2px) skew(-1deg); }
+      40% { transform: translate(2px, -2px) skew(1deg); }
+      60% { transform: translate(-1px, 1px) skew(-0.5deg); }
+      80% { transform: translate(1px, -1px) skew(0.5deg); }
+      100% { transform: translate(0, 0) skew(0deg); }
+    }
+
+    .explosion {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle, #00f 0%, #000 70%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="layer field"></div>
+  <div class="layer fire"></div>
+  <div class="layer smoke"></div>
+
+  <img src="https://i.imgur.com/6RJpGZf.png" class="helicopter" alt="helicopter">
+  <img src="https://i.imgur.com/GQ6Q6vO.png" class="plane" alt="plane">
+
+  <div class="title">🔥 ЛУЧШИЕ ХАКЕРСКИЕ ГРУППИРОВКИ РОССИИ 🔥</div>
+
+  <div class="groups">
+    <div class="group">ANONYMOUS</div>
+    <div class="group">KILLNET</div>
+    <div class="group">RAZVODNIK</div>
+    <div class="group">XAC3</div>
+    <div class="group">NB65</div>
+  </div>
+
+  <div class="explosion" id="explosion"></div>
+
+  <script>
+    // Запуск ядерного взрыва через 50 секунд
+    setTimeout(() => {
+      const explosion = document.getElementById('explosion');
+      explosion.style.opacity = '1';
+      document.body.innerHTML = '<div style="color:#00f; font-size:5em; text-align:center; padding-top:40vh;">💥 ЯДЕРНЫЙ ВЗРЫВ 💥</div>';
+    }, 50000);
+  </script>
+</body>
+</html>
