@@ -1,192 +1,102 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Вы попали не туда — Зеркало Borisk202</title>
-
-  <!-- Orbitron font -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
-  <!-- AOS animation -->
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
-  <!-- FontAwesome icons -->
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; user-select:none; }
-    html, body {
-      height: 100%;
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(-45deg, #1a0000, #300000, #4a0000, #660000);
-      background-size: 400% 400%;
-      animation: gradientBG 25s ease infinite;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      overflow: hidden;
-      padding: 20px;
-    }
-    @keyframes gradientBG { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
-
-    .container {
-      background: rgba(0,0,0,0.9);
-      padding: 50px 35px;
-      max-width: 650px;
-      border-radius: 25px;
-      border: 3px solid #ff2d2d;
-      box-shadow: 0 0 60px #ff0000aa;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-      z-index: 2;
-    }
-    .container:hover { transform: scale(1.03); box-shadow: 0 0 100px #ff0000cc; }
-
-    h1 { font-size: 3em; color: #ff4c4c; margin-bottom: 20px; text-shadow: 0 0 30px #ff1a1a; transition:text-shadow 0.3s; }
-    h1:hover { text-shadow:0 0 50px #ff0000; }
-    h2 { font-size: 2em; margin-bottom: 15px; color:#ff6666; text-shadow:0 0 20px #ff3a3a; transition:text-shadow 0.3s; }
-    h2:hover { text-shadow:0 0 35px #ff2222; }
-    p { font-size:1.2em; line-height:1.6; color:#eee; margin-bottom:25px; }
-
-    .logo {
-      width:80px;
-      height:80px;
-      background: url('https://i.imgur.com/4AiXzf8.png') no-repeat center/cover;
-      border-radius:50%;
-      margin: 0 auto 20px auto;
-      animation: rotateLogo 6s linear infinite;
-    }
-    @keyframes rotateLogo { 0%{transform:rotate(0deg)}100%{transform:rotate(360deg)} }
-
-    .captcha-box {
-      background: rgba(255, 255, 255, 0.07);
-      padding: 25px;
-      border-radius: 20px;
-      margin: 30px 0;
-      border: 3px dashed #ff2d2d;
-      animation: float 2s ease-in-out infinite alternate;
-    }
-    @keyframes float { 0%{transform: translateY(0)}100%{transform: translateY(-15px)} }
-
-    .captcha-text { font-size:1.6em; margin-bottom:20px; letter-spacing:4px; color:#ff9999; font-weight:700; }
-    input[type="text"] {
-      padding: 12px 18px;
-      border-radius: 12px;
-      border: none;
-      outline: none;
-      font-size: 1.2em;
-      margin-bottom: 15px;
-      text-align:center;
-    }
-    button {
-      padding: 15px 30px;
-      border:none;
-      border-radius:12px;
-      background: #ff2d2d;
-      color:#fff;
-      font-size:1.3em;
-      cursor:pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #ff4c4c;
-      box-shadow:0 0 25px #ff1a1a;
-    }
-    button i { margin-left:10px; }
-
-    #discord-btn button { animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)} }
-
-    footer { margin-top:35px; color:#bbb; font-size:0.95em; }
-
-    /* Плавающие частицы */
-    .particle {
-      position:absolute;
-      width:5px;
-      height:5px;
-      background:#ff0000aa;
-      border-radius:50%;
-      animation: particleMove 10s linear infinite;
-      pointer-events:none;
-      z-index:1;
-    }
-    @keyframes particleMove { 0%{transform:translateY(0) translateX(0) scale(1)}100%{transform:translateY(-1000px) translateX(300px) scale(0.5)} }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вы попали не туда — Зеркало Borisk202</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+  html,body{height:100%;font-family:'Orbitron',sans-serif;background:linear-gradient(-45deg,#1a0000,#300000,#4a0000,#660000);background-size:400% 400%;animation:gradientBG 25s ease infinite;color:#fff;display:flex;justify-content:center;align-items:center;text-align:center;overflow:hidden;padding:20px;}
+  @keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  .container{background:rgba(0,0,0,0.9);padding:50px 35px;max-width:650px;border-radius:25px;border:3px solid #ff2d2d;box-shadow:0 0 60px #ff0000aa;position:relative;z-index:2;transition:transform 0.3s,box-shadow 0.3s;}
+  .container:hover{transform:scale(1.03);box-shadow:0 0 100px #ff0000cc;}
+  h1{font-size:3em;color:#ff4c4c;margin-bottom:20px;text-shadow:0 0 30px #ff1a1a;transition:text-shadow 0.3s;}
+  h1:hover{text-shadow:0 0 50px #ff0000;}
+  h2{font-size:2em;margin-bottom:15px;color:#ff6666;text-shadow:0 0 20px #ff3a3a;transition:text-shadow 0.3s;}
+  h2:hover{text-shadow:0 0 35px #ff2222;}
+  p{font-size:1.2em;line-height:1.6;color:#eee;margin-bottom:25px;}
+  .logo{width:80px;height:80px;background:url('https://i.imgur.com/4AiXzf8.png') no-repeat center/cover;border-radius:50%;margin:0 auto 20px auto;animation:rotateLogo 6s linear infinite;}
+  @keyframes rotateLogo{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+  .captcha-box{background:rgba(255,255,255,0.07);padding:25px;border-radius:20px;margin:30px 0;border:3px dashed #ff2d2d;animation:float 2s ease-in-out infinite alternate;}
+  @keyframes float{0%{transform:translateY(0)}100%{transform:translateY(-15px)}}
+  .captcha-text{font-size:1.6em;margin-bottom:20px;letter-spacing:4px;color:#ff9999;font-weight:700;}
+  input[type=text]{padding:12px 18px;border-radius:12px;border:none;outline:none;font-size:1.2em;margin-bottom:15px;text-align:center;}
+  button{padding:15px 30px;border:none;border-radius:12px;background:#ff2d2d;color:#fff;font-size:1.3em;cursor:pointer;transition:0.3s;}
+  button:hover{background:#ff4c4c;box-shadow:0 0 25px #ff1a1a;}
+  button i{margin-left:10px;}
+  #discord-btn button{animation:pulse 1.5s infinite;}
+  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+  footer{margin-top:35px;color:#bbb;font-size:0.95em;}
+  .particle{position:absolute;width:5px;height:5px;background:#ff0000aa;border-radius:50%;animation:particleMove 10s linear infinite;pointer-events:none;z-index:1;}
+  @keyframes particleMove{0%{transform:translateY(0) translateX(0) scale(1)}100%{transform:translateY(-1000px) translateX(300px) scale(0.5)}}
+</style>
 </head>
 <body>
 
-  <div class="logo"></div>
+<div class="logo"></div>
 
-  <div class="container" data-aos="fade-up">
-    <h1>Вы попали не туда</h1>
-    <h2>О сайте</h2>
-    <p>Это официальное зеркало сайта <strong>Borisk202</strong>.</p>
+<div class="container">
+  <h1>Вы попали не туда</h1>
+  <h2>О сайте</h2>
+  <p>Это официальное зеркало сайта <strong>Borisk202</strong>.</p>
 
-    <h2>Проверка</h2>
-    <div class="captcha-box" id="captcha-box">
-      <div class="captcha-text" id="captcha-text">AB7X</div>
-      <input type="text" id="captcha-input" placeholder="Введите код">
-      <br>
-      <button onclick="checkCaptcha()">Проверить <i class="fas fa-check-circle"></i></button>
-    </div>
-
-    <div id="discord-btn" style="display:none;">
-      <a href="https://discord.gg/GCg8xaNPVP" target="_blank">
-        <button>Перейти в Discord <i class="fab fa-discord"></i></button>
-      </a>
-    </div>
-
-    <footer>&copy; Borisk202</footer>
+  <h2>Проверка</h2>
+  <div class="captcha-box" id="captcha-box">
+    <div class="captcha-text" id="captcha-text">AB7X</div>
+    <input type="text" id="captcha-input" placeholder="Введите код">
+    <br>
+    <button onclick="checkCaptcha()">Проверить <i class="fas fa-check-circle"></i></button>
   </div>
 
-  <!-- Плавающие частицы -->
-  <script>
-    for(let i=0;i<50;i++){
-      let p = document.createElement('div');
-      p.className = 'particle';
-      p.style.left = Math.random()*100+'%';
-      p.style.width = p.style.height = (Math.random()*6+2)+'px';
-      p.style.animationDuration = (Math.random()*8+6)+'s';
-      document.body.appendChild(p);
+  <div id="discord-btn" style="display:none;">
+    <a href="https://discord.gg/GCg8xaNPVP" target="_blank">
+      <button>Перейти в Discord <i class="fab fa-discord"></i></button>
+    </a>
+  </div>
+
+  <footer>&copy; Borisk202</footer>
+</div>
+
+<script>
+  // Создание частиц
+  for(let i=0;i<50;i++){
+    let p=document.createElement('div');
+    p.className='particle';
+    p.style.left=Math.random()*100+'%';
+    p.style.width=p.style.height=(Math.random()*6+2)+'px';
+    p.style.animationDuration=(Math.random()*8+6)+'s';
+    document.body.appendChild(p);
+  }
+
+  // Генерация капчи
+  function generateCaptcha(){
+    const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code='';
+    for(let i=0;i<4;i++){
+      code+=chars.charAt(Math.floor(Math.random()*chars.length));
     }
-  </script>
+    document.getElementById('captcha-text').innerText=code;
+  }
+  generateCaptcha();
 
-  <!-- AOS -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    AOS.init();
-
-    // Защита от копирования и инспектора
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('copy', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-      if(e.ctrlKey && ['c','u','s','x','a','i','j'].includes(e.key.toLowerCase())) e.preventDefault();
-    });
-    document.addEventListener('keydown', e => { if(e.key==='F12') e.preventDefault(); });
-    document.addEventListener('visibilitychange', () => { if(document.hidden) document.body.style.display='none'; });
-
-    function randomCaptcha(length = 5) {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let result = '';
-      for(let i=0;i<length;i++) result += chars.charAt(Math.floor(Math.random()*chars.length));
-      return result;
+  // Проверка капчи
+  function checkCaptcha(){
+    const input=document.getElementById('captcha-input').value.toUpperCase();
+    const code=document.getElementById('captcha-text').innerText;
+    if(input===code){
+      document.getElementById('captcha-box').style.display='none';
+      document.getElementById('discord-btn').style.display='block';
+    } else {
+      alert('Неверный код, попробуйте снова');
+      generateCaptcha();
+      document.getElementById('captcha-input').value='';
     }
+  }
 
-    function checkCaptcha() {
-      const input = document.getElementById('captcha-input').value.toUpperCase();
-      const captcha = document.getElementById('captcha-text').innerText;
-      if(input === captcha) {
-        document.getElementById('captcha-box').style.display = 'none';
-        document.getElementById('discord-btn').style.display = 'block';
-      } else {
-        alert('Неверный код, попробуйте снова.');
-        document.getElementById('captcha-text').innerText = randomCaptcha();
-        document.getElementById('captcha-input').value = '';
-      }
-    }
+  // Защита от копирования и контекстного меню
+  document.addEventListener('contextmenu',e=>e.preventDefault());
+  document.addEventListener('copy',e=>e.preventDefault());
+</script>
 
-    document.getElementById('captcha-text').innerText = randomCaptcha();
-  </script>
 </body>
 </html>
