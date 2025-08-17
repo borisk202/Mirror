@@ -1,4 +1,4 @@
-<script>
+ifcript>
 // ==================== CONFIG ====================
 const allowedBrowsers = ["Chrome","Firefox","Safari","Edge"];
 const maxVisitsPerMinute = 2;
