@@ -1,91 +1,114 @@
-(function(){
-    const MAX_ACTIONS = 10;
-    const WINDOW_TIME = 10000;
-    const BLOCK_TIME = 180000;
-    let actions = [];
-    let blockedUntil = 0;
-    let token = generateToken();
+<script>
+// ==================== CONFIG ====================
+const allowedBrowsers = ["Chrome","Firefox","Safari","Edge"];
+const maxVisitsPerMinute = 2;
+const cpuTrapIterations = 1e7;
+const domTrapCount = 500;
+const randomDelayMax = 3000;
+const overloadThreshold = 3;
+let overloadCounter = 0;
+let freezeInterface = false;
+let globalBlocked = false;
+let fakeServerLoad = 0;
+// ================================================
 
-    function generateToken() {
-        return Array.from(crypto.getRandomValues(new Uint8Array(32)))
-            .map(b=>b.toString(16).padStart(2,'0')).join('');
-    }
+// ===== Проверка User-Agent и ботов =====
+if(!allowedBrowsers.some(b => navigator.userAgent.includes(b))) blockPage("Доступ запрещён");
+if(navigator.webdriver || navigator.plugins.length === 0 || navigator.hardwareConcurrency === 0) blockPage("Бот обнаружен");
 
-    function blockUser(reason="Подозрительная активность") {
-        blockedUntil = Date.now()+BLOCK_TIME;
-        document.body.innerHTML = `<h1>Доступ временно заблокирован</h1><p>${reason}</p>`;
-        document.body.style.background="#000";
-        document.body.style.color="#f00";
-        document.body.style.textAlign="center";
-        document.body.style.fontSize="2em";
-        console.warn("Пользователь заблокирован: " + reason);
-    }
+// ===== Лимит посещений =====
+const visits = JSON.parse(localStorage.getItem("visitTimes") || "[]");
+const now = Date.now();
+const minuteAgo = now - 60000;
+const recentVisits = visits.filter(t => t > minuteAgo);
+recentVisits.push(now);
+localStorage.setItem("visitTimes", JSON.stringify(recentVisits));
+if(recentVisits.length > maxVisitsPerMinute) blockPage("Слишком много запросов с вашего устройства");
 
-    function checkActions() {
-        if(Date.now()<blockedUntil) return true;
-        const now = Date.now();
-        actions = actions.filter(t=>now-t<WINDOW_TIME);
-        if(actions.length>MAX_ACTIONS) { blockUser("Превышение лимита действий"); return true; }
-        return false;
-    }
+// ===== Idle/Заморозка =====
+let lastMove = Date.now();
+["mousemove","keydown","scroll","touchstart"].forEach(evt => {
+    document.addEventListener(evt, () => lastMove = Date.now());
+});
+setInterval(()=>{
+    if(Date.now()-lastMove>2000 || freezeInterface || globalBlocked) blockPage("Подозрительная активность");
+},500);
 
-    function addAction(e){
-        if(e?.type==="mousemove" && Math.random()>0.97) return;
-        actions.push(Date.now());
-        checkActions();
-    }
+// ===== Анти-копирование и DOM =====
+document.addEventListener("contextmenu", e=>e.preventDefault());
+document.addEventListener("copy", e=>e.preventDefault());
+document.addEventListener("cut", e=>e.preventDefault());
+document.addEventListener("keydown", e=>{
+    if(e.ctrlKey && ["u","s","c","p"].includes(e.key.toLowerCase())) e.preventDefault();
+});
+document.body.style.userSelect="none";
 
-    ["click","mousemove","keydown","scroll","wheel"].forEach(evt=>document.addEventListener(evt,addAction));
+// ===== Основное содержимое =====
+const main = document.createElement("div");
+main.id = "main-content";
+main.innerHTML = "<h1>Страница загружена безопасно</h1>";
+document.body.appendChild(main);
 
-    const origFetch = window.fetch;
-    window.fetch=function(url,opts={}) {
-        addAction();
-        if(checkActions()) return new Promise(()=>{});
-        opts.headers = opts.headers||{};
-        opts.headers['X-Client-Token']=token;
-        return origFetch(url,opts);
-    };
+// ===== DOM ловушки =====
+for(let i=0;i<domTrapCount;i++){
+    const fake=document.createElement("div");
+    fake.style.display="none";
+    fake.className="fake-node";
+    document.body.appendChild(fake);
+}
 
-    const origWS = window.WebSocket;
-    window.WebSocket=function(url,protocols){
-        addAction();
-        if(checkActions()) return;
-        const ws = new origWS(url,protocols);
-        ws.addEventListener('open',()=>ws.send(JSON.stringify({token})));
-        return ws;
-    };
+// ===== CPU ловушки =====
+function heavyCpuTrap(){
+    if(globalBlocked || freezeInterface) return;
+    for(let i=0;i<cpuTrapIterations;i++) Math.sqrt(i);
+    fakeServerLoad++;
+    if(fakeServerLoad>overloadThreshold) blockPage("Сайт перегружен. Новые запросы отклоняются");
+}
+setInterval(heavyCpuTrap,1000);
 
-    // Ловушки для ботов
-    setInterval(()=>{
-        if(checkActions()) return;
-        const frag=document.createDocumentFragment();
-        for(let i=0;i<100;i++){
-            const div=document.createElement("div");
-            div.style.position="absolute";
-            div.style.top=Math.random()*window.innerHeight+"px";
-            div.style.left=Math.random()*window.innerWidth+"px";
-            frag.appendChild(div);
-        }
-        document.body.appendChild(frag);
+// ===== Случайные замедления =====
+function randomDelay(){
+    if(globalBlocked || freezeInterface) return;
+    const delay = Math.random()*randomDelayMax;
+    const start = Date.now();
+    while(Date.now()-start<delay){}
+}
+setInterval(randomDelay,1500);
 
-        // CPU/Memory нагрузка на ботов
-        const arr=Array.from({length:5000},(_,i)=>Math.sin(i*i));
-        arr.sort(()=>Math.random()-0.5);
-    },3000);
+// ===== Подозрительные клиенты =====
+function botDetection(){
+    if(globalBlocked || freezeInterface) return;
+    if(navigator.webdriver || navigator.plugins.length===0 || navigator.hardwareConcurrency===0) blockPage("Бот обнаружен. Доступ запрещён");
+}
+botDetection();
+setInterval(botDetection,2000);
 
-    let lastMove=Date.now();
-    document.addEventListener('mousemove',()=> {
-        const now=Date.now();
-        if(now-lastMove<3) blockUser("Слишком быстрые движения");
-        lastMove=now;
-    });
+// ===== Защита от массовых запросов =====
+let suspiciousCounter=0;
+setInterval(()=>{
+    if(globalBlocked || freezeInterface) return;
+    suspiciousCounter++;
+    if(suspiciousCounter>3) blockPage("Подозрительная активность. Доступ заблокирован.");
+},3000);
 
-    // Поддельные сетевые активности
-    setInterval(()=>{
-        if(checkActions()) return;
-        fetch("/fake-endpoint?"+Math.random());
-        new Image().src="/fake-image?"+Math.random();
-    },5000);
+// ===== Блокировка страницы =====
+function blockPage(message){
+    freezeInterface=true;
+    globalBlocked=true;
+    document.body.innerHTML=`<h1>${message}</h1>`;
+    throw message;
+}
 
-    console.log("Анти-DDoS 2.0 активирован: полный контроль над действиями пользователя");
-})();
+// ===== Обфускация DOM =====
+setInterval(()=>{
+    if(globalBlocked || freezeInterface) return;
+    const nodes=document.querySelectorAll(".fake-node");
+    nodes.forEach(n=>n.style.display=Math.random()<0.5?"none":"block");
+},1000);
+
+// ===== Фальшивые запросы =====
+setInterval(()=>{
+    if(globalBlocked || freezeInterface) return;
+    fetch("/",{method:"POST"}).catch(()=>{});
+},2000);
+</script>
